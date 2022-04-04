@@ -6,21 +6,26 @@ import datetime
 
 
 def generateWordlist(filename):
-    with open(filename, "r", encoding='ISO-8859-1') as file:
-        f = file.read().split("\n")
     
-    file = open("generated_hash.txt", "w", encoding='ISO-8859-1')
 
-    bar = progressbar.ProgressBar(maxval=len(f), \
+    with open(filename, "r", encoding='ISO-8859-1') as file:
+        bar = progressbar.ProgressBar(maxval=8459060239, \
         widgets=[progressbar.Bar('=', '[', ']'), ' ', progressbar.Percentage()])
-    bar.start()
-
-    for index,item in enumerate(f):
-        ntlm_hash = binascii.hexlify(hashlib.new('md4', item.encode('utf-16le')).digest()).decode("utf-8")
-        file.write(ntlm_hash+":"+item+"\n")
-        bar.update(index)
-    file.close()
-    bar.finish()
+        bar.start()
+        loop = True
+        line = file.readline()
+        counter = 0
+        with open("generated_hash.txt", "w", encoding='ISO-8859-1') as f:
+            while(loop):
+                ntlm_hash = binascii.hexlify(hashlib.new('md4', line.encode('utf-16le')).digest()).decode("utf-8")
+                f.write(ntlm_hash+":"+line)
+                bar.update(counter)
+                counter +=1
+                line = file.readline()
+                if(len(line) == 0):
+                    loop=False
+                
+        bar.finish()
 
 
 if __name__ == "__main__":
